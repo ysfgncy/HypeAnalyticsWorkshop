@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Hype Analytics Workshop</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="facebook_app_id">684713298630604</string>
+    <string name="fb_login_protocol_scheme">fb684713298630604</string>
+</resources>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "369307121347",
+    "firebase_url": "https://hype-analytics-workshop.firebaseio.com",
+    "project_id": "hype-analytics-workshop",
+    "storage_bucket": "hype-analytics-workshop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369307121347:android:010e240b4f5c13cb",
+        "android_client_info": {
+          "package_name": "com.gencay.yusuf.hypeanalyticsworkshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369307121347-2tff5ecalp0g9e86ho2qj3ckf47p846p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gencay.yusuf.hypeanalyticsworkshop",
+            "certificate_hash": "df45b695a1f246ca98745e1183e35fd6d9148fc4"
+          }
+        },
+        {
+          "client_id": "369307121347-edh245l9ktl2qg21jrcqtvsd67gq8s3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtpL883C0k0q9eWEsSSe42pC_J73Roi-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369307121347-edh245l9ktl2qg21jrcqtvsd67gq8s3q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
