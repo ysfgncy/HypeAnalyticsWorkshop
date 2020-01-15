@@ -2,25 +2,16 @@ package com.gencay.yusuf.hypeanalyticsworkshop;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-
-
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -42,14 +33,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAnalytics mFirebaseAnalytics;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        GoogleAnalytics.getInstance(this).setLocalDispatchPeriod(1);
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Bundle params = new Bundle();
         params.putString("screenName", "Kayıt Ol");
+        params.putString("platform", "android");
+        params.putString("userid", uid);
         mFirebaseAnalytics.logEvent("screenView", params);
 
         epostaField = findViewById(R.id.inputEposta);
@@ -58,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createAccount(epostaField.getText().toString(),sifreField.getText().toString());
+                createAccount(epostaField.getText().toString(), sifreField.getText().toString());
             }
         });
 
@@ -72,21 +68,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.buttonWebView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent activity1intent = new Intent(getApplicationContext(), WebViewJava.class);
+                startActivity(activity1intent);
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( MainActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 String newToken = instanceIdResult.getToken();
-                Log.e("newToken",newToken);
+                Log.e("newToken", newToken);
 
             }
         });
 
 
     }
-
 
 
     // [START on_start_check_user]
@@ -114,12 +116,14 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                             Bundle params = new Bundle();
                             params.putString("eventCategory", "Functions");
                             params.putString("eventAction", "SignUp");
                             params.putString("eventLabel", "Success");
+                            params.putString("platform", "android");
+                            params.putString("userid", uid);
                             mFirebaseAnalytics.logEvent("GAEvent", params);
 
 
@@ -130,11 +134,15 @@ public class MainActivity extends AppCompatActivity {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                             Bundle params = new Bundle();
                             params.putString("eventCategory", "Functions");
                             params.putString("eventAction", "SignUp");
                             params.putString("eventLabel", "Failure");
+                            params.putString("userid", uid);
+                            params.putString("platform", "android");
+
                             mFirebaseAnalytics.logEvent("GAEvent", params);
 
 
@@ -168,8 +176,6 @@ public class MainActivity extends AppCompatActivity {
 
         return valid;
     }
-
-
 
 
 }

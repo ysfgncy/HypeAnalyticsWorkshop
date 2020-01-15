@@ -1,15 +1,15 @@
 package com.gencay.yusuf.hypeanalyticsworkshop;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -47,9 +48,11 @@ public class GirisYap extends AppCompatActivity {
         setContentView(R.layout.activity_giris_yap);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Bundle params = new Bundle();
         params.putString("screenName", "Giriş Yap");
+        params.putString("platform", "android");
+        params.putString("userid",uid);
         mFirebaseAnalytics.logEvent("screenView", params);
 
         eposta = findViewById(R.id.inputEpostaGiris);
@@ -58,7 +61,7 @@ public class GirisYap extends AppCompatActivity {
         findViewById(R.id.buttonLoginGiris).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn(eposta.getText().toString(),sifre.getText().toString());
+                signIn(eposta.getText().toString(), sifre.getText().toString());
             }
         });
 
@@ -67,8 +70,6 @@ public class GirisYap extends AppCompatActivity {
             public void onClick(View view) {
 
                 signInWithGoogle();
-
-
 
 
             }
@@ -107,19 +108,18 @@ public class GirisYap extends AppCompatActivity {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
-
-
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                 Bundle product1 = new Bundle();
-                product1.putString( FirebaseAnalytics.Param.ITEM_ID, "sku1234");  // Ürün için ID
-                product1.putString( FirebaseAnalytics.Param.ITEM_NAME, "Herkes İçin TV Paketi"); //Ürün adı
-                product1.putString( FirebaseAnalytics.Param.ITEM_CATEGORY, "Ana Paket"); //Ana paket veya ek paket
-                product1.putString( FirebaseAnalytics.Param.ITEM_VARIANT, "Bireysel"); //Bireysel veya Kurumsal
-                product1.putString( FirebaseAnalytics.Param.ITEM_BRAND, "TV+"); //DSS ürünü
-                product1.putDouble( FirebaseAnalytics.Param.PRICE, 12.90); //Aylık ücret
-                product1.putString( FirebaseAnalytics.Param.CURRENCY, "TRY" ); //Para birimi
-                product1.putLong( FirebaseAnalytics.Param.INDEX, 1 ); // Hangi sırada görüntülendiği
-                product1.putLong( FirebaseAnalytics.Param.QUANTITY, 1 );
+                product1.putString(FirebaseAnalytics.Param.ITEM_ID, "sku1234");  // Ürün için ID
+                product1.putString(FirebaseAnalytics.Param.ITEM_NAME, "Herkes İçin TV Paketi"); //Ürün adı
+                product1.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "Ana Paket"); //Ana paket veya ek paket
+                product1.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "Bireysel"); //Bireysel veya Kurumsal
+                product1.putString(FirebaseAnalytics.Param.ITEM_BRAND, "TV+"); //DSS ürünü
+                product1.putDouble(FirebaseAnalytics.Param.PRICE, 12.90); //Aylık ücret
+                product1.putString(FirebaseAnalytics.Param.CURRENCY, "TRY"); //Para birimi
+                product1.putLong(FirebaseAnalytics.Param.INDEX, 1); // Hangi sırada görüntülendiği
+                product1.putLong(FirebaseAnalytics.Param.QUANTITY, 1);
 
 
                 ArrayList items = new ArrayList();
@@ -127,22 +127,24 @@ public class GirisYap extends AppCompatActivity {
 
 
                 Bundle ecommerceBundle = new Bundle();
-                ecommerceBundle.putParcelableArrayList( "items", items );
+                ecommerceBundle.putParcelableArrayList("items", items);
 
                 // Sepet ile alakalı bilgiler
-                ecommerceBundle.putString( FirebaseAnalytics.Param.TRANSACTION_ID, "T12345" ); // Sipariş ID’si
-                ecommerceBundle.putString( FirebaseAnalytics.Param.AFFILIATION, "" ); // Boş kalacak
-                ecommerceBundle.putDouble( FirebaseAnalytics.Param.VALUE, 37.39 ); // Toplam sepet geliri. Decimal ayracı nokta olacak.
-                ecommerceBundle.putDouble( FirebaseAnalytics.Param.TAX, 2.85 ); // Vergi
-                ecommerceBundle.putDouble( FirebaseAnalytics.Param.SHIPPING, 5.34 ); // Varsa Kargo
-                ecommerceBundle.putString( FirebaseAnalytics.Param.CURRENCY, "TRY" ); // Para birimi TRY/USD/EUR
-                ecommerceBundle.putString( FirebaseAnalytics.Param.COUPON, "SUMMER2017" ); // Varsa indirim kuponu yoksa boş gelecek.
-                ecommerceBundle.putString("eventCategory","Enhanced Ecommerce");
-                ecommerceBundle.putString("eventAction","Transaction");
-                ecommerceBundle.putString("eventLabel","Success");
-                
+                ecommerceBundle.putString(FirebaseAnalytics.Param.TRANSACTION_ID, "T12345"); // Sipariş ID’si
+                ecommerceBundle.putString(FirebaseAnalytics.Param.AFFILIATION, ""); // Boş kalacak
+                ecommerceBundle.putDouble(FirebaseAnalytics.Param.VALUE, 37.39); // Toplam sepet geliri. Decimal ayracı nokta olacak.
+                ecommerceBundle.putDouble(FirebaseAnalytics.Param.TAX, 2.85); // Vergi
+                ecommerceBundle.putDouble(FirebaseAnalytics.Param.SHIPPING, 5.34); // Varsa Kargo
+                ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, "TRY"); // Para birimi TRY/USD/EUR
+                ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, "SUMMER2017"); // Varsa indirim kuponu yoksa boş gelecek.
+                ecommerceBundle.putString("eventCategory", "Enhanced Ecommerce");
+                ecommerceBundle.putString("eventAction", "Transaction");
+                ecommerceBundle.putString("eventLabel", "Success");
+                ecommerceBundle.putString("platform", "android");
+                ecommerceBundle.putString("userid", uid);
 
-                mFirebaseAnalytics.logEvent( FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, ecommerceBundle );
+
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, ecommerceBundle);
 
 
                 Bundle params = new Bundle();
@@ -150,21 +152,23 @@ public class GirisYap extends AppCompatActivity {
                 params.putString("eventCategory", "Functions");
                 params.putString("eventAction", "SignInWithGoogle");
                 params.putString("eventLabel", "Success");
+                params.putString("platform", "android");
+                params.putString("userid", "uid");
                 mFirebaseAnalytics.logEvent("GAEvent", params);
-
 
 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
 
 
-
                 Log.w(TAG, "Google sign in failed", e);
-
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 Bundle params = new Bundle();
                 params.putString("eventCategory", "Functions");
                 params.putString("eventAction", "SignInWithGoogle");
                 params.putString("eventLabel", "Failure");
+                params.putString("platform", "android");
+                params.putString("userid", uid);
                 mFirebaseAnalytics.logEvent("GAEvent", params);
                 // [START_EXCLUDE]
                 // [END_EXCLUDE]
@@ -225,13 +229,15 @@ public class GirisYap extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                             Bundle params = new Bundle();
                             params.putString("eventCategory", "Functions");
                             params.putString("eventAction", "SignIn");
                             params.putString("eventLabel", "Success");
+                            params.putString("platform", "android");
+                            params.putString("userid", uid);
                             mFirebaseAnalytics.logEvent("GAEvent", params);
-
 
 
                             Intent activity2Intent = new Intent(getApplicationContext(), GirisYapildi.class);
@@ -243,11 +249,14 @@ public class GirisYap extends AppCompatActivity {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(GirisYap.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                             Bundle params = new Bundle();
                             params.putString("eventCategory", "Functions");
                             params.putString("eventAction", "SignIn");
                             params.putString("eventLabel", "Failure");
+                            params.putString("platform", "android");
+                            params.putString("userid", uid);
                             mFirebaseAnalytics.logEvent("GAEvent", params);
 
 
@@ -258,7 +267,6 @@ public class GirisYap extends AppCompatActivity {
                 });
         // [END sign_in_with_email]
     }
-
 
 
     private boolean validateForm() {
@@ -282,9 +290,6 @@ public class GirisYap extends AppCompatActivity {
 
         return valid;
     }
-
-
-
 
 
 }
